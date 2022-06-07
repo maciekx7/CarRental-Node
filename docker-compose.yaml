@@ -1,0 +1,29 @@
+version: '3.3'
+services: 
+    server:
+        build:
+            context: ./server/.
+        env_file: ./.env
+        command: npm start
+        ports:
+            - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+        depends_on: 
+            - mysqldb
+        environment: 
+            DB_HOST: mysqldb
+    mysqldb:
+        build:
+            context: ./mysql/.
+        env_file: ./.env
+        environment: 
+            MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+            MYSQL_DATABASE: $DB_SCHEMA
+        ports:
+            - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+        volumes:
+            - mysql:/var/lib/mysql
+            - mysql_config:/etc/mysql
+
+volumes:
+    mysql:
+    mysql_config:
